@@ -59,8 +59,8 @@ public class Bridge {
 		//bridge_lock.release();
 		direction_lock[direction].release();
 		
-		System.out.print("EnterBridge :: direction " + direction + " -> complete");
-		System.out.println(":: num_cob: " + num_cob + "  waiting0: " + cars_waiting[0] + " waiting1: " + cars_waiting[1]);
+		//System.out.print("EnterBridge :: direction " + direction + " -> complete");
+		//System.out.println(":: num_cob: " + num_cob + "  waiting0: " + cars_waiting[0] + " waiting1: " + cars_waiting[1]);
 
 	}
 
@@ -79,15 +79,15 @@ public class Bridge {
 		}
 
 		//cars_waiting[direction]--;
-		System.out.print("ExitBridge :: direction " + direction + " -> complete");
-		System.out.println(":: num_cob: " + num_cob + "  waiting0: " + cars_waiting[0] + " waiting1: " + cars_waiting[1]);
+		//System.out.print("ExitBridge :: direction " + direction + " -> complete");
+		//System.out.println(":: num_cob: " + num_cob + "  waiting0: " + cars_waiting[0] + " waiting1: " + cars_waiting[1]);
 
 		if(num_cob == 0 && cars_waiting[direction] == 0 && cars_waiting[Math.abs(direction - 1)] > 0) {
 			//bridge_lock.acquire();
 			bridge_direction = Math.abs(direction - 1);
-			System.out.println("SWITCHING DIRECTION");
+			//System.out.println("SWITCHING DIRECTION");
 				direction_lock[bridge_direction].acquire();
-				System.out.println("wakeAll()");
+				//System.out.println("wakeAll()");
 				cars_cv[bridge_direction].wakeAll();
 				direction_lock[bridge_direction].release();
 				//bridge_lock.release();
