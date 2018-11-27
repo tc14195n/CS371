@@ -1,0 +1,345 @@
+package nachos.threads;
+import nachos.machine.Lib;
+
+
+@SuppressWarnings("serial")
+class HashTableException extends Exception {
+	String err;
+	HashTableException(String exceptionError) {
+		err = exceptionError;
+	}
+}
+
+class Node {
+	
+	private Integer key; 
+	private int value;
+	private Node next; 
+	
+	Node(Integer k, int v) {
+		key = k;
+		value = v;
+		next = null;
+	}
+	Node(){
+		key = 0;
+		value = 0;
+		next = null;
+	}
+	int getKey() {
+		return key;
+	}
+	int getValue() {
+		return value;
+	}
+
+	Node getNext() {
+		return next;
+	}
+	void setKey(Integer key) {
+		key = key.hashCode();
+	}
+	void setValue(int v) {
+		value = v;
+	}
+	void setNext(Node n) {
+		next = n;
+	}
+	
+}
+
+
+
+
+public class HashTable extends Node {	
+	/*
+	private final static int SIZE = 256000;
+	private final static int FNV_OFFSET_BASIS = 0x811c9dc5;
+	private final static int FNV_PRIME = 0x01000193;
+	private final static int maxElementsPerBucket = 3;
+	*/
+	private int activeBuckets;
+	private int activeNodes;
+    private int numOfBuckets = 3;
+    private Node[] hTable;
+    private final int maxElements = 3;
+	private Node[] Nodes;
+	//private Bucket next;
+	
+	
+	HashTable() {
+    	activeBuckets = 0;
+        hTable = new Node[numOfBuckets];
+        for(int i = 0; i < numOfBuckets; i++) {
+        	hTable[i] = new Node();
+        }
+        activeBuckets = 0;
+        activeNodes =  0;
+
+    }
+	
+	public void setKey(Integer hkey) {
+		hashKey = hkey;
+	}
+	
+	public Integer getKey() {
+		return hashKey;
+	}
+	
+	public int getActiveNodes() {
+		return activeNodes;
+	}
+	
+	public void addNode(Integer key, int value) throws Exception {
+		if(activeNodes == 0) {
+			Nodes[0].setKey(hKey);
+			Nodes[0].setValue(value);
+			activeNodes++;
+		} else if(activeNodes < 0) {
+			throw new HashTableException("ADD: active node count incorrect.");
+		} else {
+			int num = activeNodes -1;
+			Nodes[num].setKey(hKey);
+			Nodes[num].setValue(value);
+			activeNodes++;
+		}
+		
+	}
+	
+	public void deleteNode(Integer key) {
+		
+	}
+    
+
+    
+    
+    public int getActiveBuckets() {
+    	return activeBuckets;
+    }
+    
+    
+    private Integer Hash(Integer key) {
+    	if(key == 0) {
+    		return key;
+    	} else {
+    	return key.hashCode() % (numOfBuckets -1);
+    	}
+    }
+    
+    private Node getTail(Node kv, Integer key) throws Exception {
+    	Node temp = kv;
+    	while(temp.getNext() != null) {
+    		temp = temp.getNext();
+    		if (temp.getKey() == key) {
+                throw new HashTableException("Duplicated Key");
+    		}
+    	}
+    	return temp;
+    }
+
+    
+    public void insert(Integer key, int v) throws Exception{
+    	
+          int hashKey = Hash(key);
+          
+          //get hash
+          //getBucketSize -> if bucketSize >=  numOfBuckets
+          
+          //if key does not match any bucket, !!setBucketKey!!
+          //setBucketKey initializes new key into all nodes
+          
+          //Looks for a bucket with matching key
+          if(hTable[hashKey].getKey() != 0) {
+        	  if (hTable[hashKey].getKey() == key) {
+                  throw new HashTableException("Duplicated Key");
+                  
+        	  }
+        	  Node tail = getTail(hTable[hashKey], key);
+        	  tail.setNext(new Node(key, v)); 
+          }else {
+        	  hTable[hashKey] = new Bucket(key); 	  
+          }
+          count ++;
+          
+    }
+
+
+    public int query(Integer key) throws Exception{
+    	/*
+    	int hash = Hash(key) % SIZE;
+    	if(hTable[hash].getKey() == 0){
+    		throw new HashTableException("Does not exist");
+    	} else if(hTable[hash].getKey() == key){
+    		return hTable[hash]//.getValue();
+    	} else {
+    		Node temp = hTable[hash];
+    		while(temp.getNext() != null) {
+    			temp = temp.getNext();
+    			if(temp.getKey() == key) {
+    				return temp.getValue();
+    			}
+    		}
+    		throw new HashTableException("Not Found");
+    	} 
+    	*/
+    	return 0;
+    }
+    
+    /*delete an element from the hashtable based on key*/
+    public void remove(int key) throws Exception{
+    	/*
+    	int hash = Hash(key) % SIZE;
+    	if(hTable[hash].getKey() == 0){
+    		throw new HashTableException("Does not exist");
+    	} else if(hTable[hash].getKey() == key){
+    		if(hTable[hash].getNext() != null){
+    			hTable[hash] = hTable[hash].getNext();
+    			count--;
+    		} else {
+        		count--;
+        		hTable[hash].setKey(0);
+    		}
+    	} else {
+    		Node temp = hTable[hash];
+    		while(temp.getNext() != null) {
+        		Node pred = temp;
+    			temp = temp.getNext();
+    			if(temp.getKey() == key) {
+    				if(temp.getNext() != null){
+    	        		pred.setNext(temp.getNext());
+    	        		count--;
+    	        		return;
+    	    		} else {
+    	    			pred.setNext(null);
+    	    			count--;
+    	    			return ;
+    	    		}
+    				
+    			}
+    		}
+    		//if the new bucket.activeCount == 0,
+    		//then setBucketKey back to -1
+    		//set all bucket.nodes.key to -1
+    		throw new HashTableException("Not Found");
+    		
+    	} 
+    	*/
+    	public Node findNodeByKey(Integer key) throws Exception {
+    		Integer hKey = Hash(key);
+    		Node temp = hTable[hKey];
+    		if(temp.getKey() == key) {
+    			
+    		}
+    		if(temp.getKey() != 0 && temp.getKey() == value) {
+    			return temp;
+    		} 
+    	}
+    	throw new HashTableException("FIND: Node does not exist.");
+    }
+    public Node findNodeByValue(int value) throws Exception {
+    	for(int i = 0; i < activeNodes; i++) {
+    		Node temp = Nodes[i];
+    		if(temp.getValue() != 0 && temp.getValue() == value) {
+    			return temp;
+    		} 
+    	}
+    	throw new HashTableException("FIND: Node does not exist.");
+    }
+   
+    }
+    
+    enum OperationType{
+    	INSERT,
+    	REMOVE,
+    	QUERY
+    }
+    
+    class ThreadOperation
+    {
+    	
+    	int k;
+    	int value;
+    	OperationType op;
+    	int result;
+    }
+    
+    public void batch(int n_ops, ThreadOperation[] ops) {
+    	for(int i = 0; i < n_ops; i++) {
+    		switch(ops[i].op) {
+    		case QUERY:
+    			//query(ops[i].k);
+    			break;
+    		case REMOVE:
+    			//this.remove(ops[i].k);
+    			break;
+    		case INSERT:
+    			//this.insert(ops[i].k, ops[i].value);
+    		
+    		}
+    		
+    	}
+    	return;
+    	
+    }
+    
+    private void bucketReorganize(Bucket[] hashTable) {
+    	//create new node[] transferArray == to numOfBuckets * maxElements
+    	//for each bucket, get activeNodes
+    	//for numOfBuckets
+    	//	add that node into transferArray
+    	//when all active 
+    	
+    	//double numOfBuckets
+    	//for(each node in transferArray)
+    	//	
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    public static void selfTest(){
+    	System.out.println("\n\nSTART: Hashtable test");
+    	try {
+    		ThreadOperation TestSet1[] = new ThreadOperation[5];
+    		//TestSet1 = [{"k": 1, "op":QUERY}];
+    		HashTable test_table1 = new HashTable();
+    		/*
+    		test_table1.insert(0, 30);
+    		test_table1.insert(1, 32);
+    		test_table1.insert(2, 34);
+    		System.out.println("Inserted 3 names.");
+
+    		Lib.assertTrue(test_table1.query(0) == 30);
+    		Lib.assertTrue(test_table1.query(1) == 32);
+    		Lib.assertTrue(test_table1.query(2) == 34);
+    		System.out.println("Looked up 3 names.");
+    		
+    		Lib.assertTrue(test_table1.getCount() == 3);
+    		System.out.println("Checked number of names");
+    		test_table1.remove("yulia");
+    		System.out.println("Removed a name.");
+    		Lib.assertTrue(test_table1.getCount() == 2);
+    		System.out.println("Rechecked count of names.");
+    		System.out.println("SUCCESS: HashTable test complete\n\n");
+ /*
+    		HashTable test_table2 = new HashTable();
+    		test_table2.insert("yulia", 30);
+    		test_table2.insert("margarita", 32);
+    		test_table2.insert("tj", 34);
+    		test_table2.insert("genti", 2);
+
+    		test_table2.remove("margarita");
+    		Lib.assertTrue(test_table2.query("yulia") == 30);
+    		Lib.assertTrue(test_table2.query("tj") == 34);
+    		//Lib.assertTrue(test_table2.getCount() == 2);
+        	System.out.println("SUCCESS: HashTable test complete\n\n");
+        	*/
+    	} catch (Exception e) {
+    		System.out.println("ERROR: HashTable test failed"+e.toString());
+    	}
+    }
+}
